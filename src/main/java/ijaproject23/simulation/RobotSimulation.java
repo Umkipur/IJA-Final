@@ -33,10 +33,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class RobotSimulation extends Application {
-    private static final int GRID_SIZE_X = 10; // Number of columns
-    private static final int GRID_SIZE_Y = 10; // Number of rows
+    private int GRID_SIZE_X = 10; // Number of columns
+    private int GRID_SIZE_Y = 10; // Number of rows
     private static final int CELL_SIZE = 50; // Size of each cell
     private static final Color CONTROLLED_ROBOT_COLOR = Color.RED;
     private static final Color PROGRAMMED_ROBOT_COLOR = Color.BLUE;
@@ -59,10 +60,20 @@ public class RobotSimulation extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        List<String> raw = getParameters().getRaw();
+        this.GRID_SIZE_X = Integer.parseInt(raw.get(0));
+        this.GRID_SIZE_Y = Integer.parseInt(raw.get(1));
+
+        logger.info(raw.toString());
 
         logger.info("The program started.");
         // Create output scene
-        Scene scene = new Scene(root, GRID_SIZE_X * CELL_SIZE + 330, GRID_SIZE_Y * CELL_SIZE + 120);
+        Scene scene;
+        if(this.GRID_SIZE_Y * CELL_SIZE + 120 < 600){
+            scene = new Scene(root, this.GRID_SIZE_X  * CELL_SIZE + 330, 600);
+        }else{
+            scene = new Scene(root, this.GRID_SIZE_X * CELL_SIZE + 330, this.GRID_SIZE_Y * CELL_SIZE + 120);
+        }
         createGrid(root);
 
         // Initialize Timeline for continuous animation
@@ -75,7 +86,7 @@ public class RobotSimulation extends Application {
         timeline.setCycleCount(Timeline.INDEFINITE); // Run indefinitely
 
         // Create env
-        this.room = new Room(GRID_SIZE_X-1, GRID_SIZE_Y-1, this);
+        this.room = new Room(this.GRID_SIZE_Y-1, this.GRID_SIZE_X-1, this);
         
         // Handle user input, control first ControlledRobot in environment
         scene.setOnKeyPressed(event -> {
@@ -145,36 +156,36 @@ public class RobotSimulation extends Application {
         // Create buttons
         Button addRobotButton = new Button("Add programmed robot");
         addRobotButton.setPrefSize(300, 100);
-        addRobotButton.setLayoutX(GRID_SIZE_X * CELL_SIZE + 20);
+        addRobotButton.setLayoutX(this.GRID_SIZE_X * CELL_SIZE + 20);
         addRobotButton.setLayoutY(0);
         addRobotButton.setFocusTraversable(false);
         addRobotButton.setOnAction(e -> setRob_draw());
         
         Button addObstacleButton = new Button("Add obstacle");
         addObstacleButton.setPrefSize(300, 100);
-        addObstacleButton.setLayoutX(GRID_SIZE_X * CELL_SIZE + 20);
+        addObstacleButton.setLayoutX(this.GRID_SIZE_X * CELL_SIZE + 20);
         addObstacleButton.setLayoutY(110);
         addObstacleButton.setFocusTraversable(false);
         addObstacleButton.setOnAction(e -> setObs_draw());
         
         Button addControlledRobotButton = new Button("Add user controlled robot");
         addControlledRobotButton.setPrefSize(300, 100);
-        addControlledRobotButton.setLayoutX(GRID_SIZE_X * CELL_SIZE + 20);
+        addControlledRobotButton.setLayoutX(this.GRID_SIZE_X * CELL_SIZE + 20);
         addControlledRobotButton.setLayoutY(220);
         addControlledRobotButton.setFocusTraversable(false);
         addControlledRobotButton.setOnAction(e -> setCTRL_draw());
         
         Button DeleteButton = new Button("Delete object");
         DeleteButton.setPrefSize(300, 100);
-        DeleteButton.setLayoutX(GRID_SIZE_X * CELL_SIZE + 20);
+        DeleteButton.setLayoutX(this.GRID_SIZE_X * CELL_SIZE + 20);
         DeleteButton.setLayoutY(330);
         DeleteButton.setFocusTraversable(false);
         DeleteButton.setOnAction(e -> setRemove());
 
         Button LoadButton = new Button("Load from file");
         LoadButton.setPrefSize(300, 100);
-        LoadButton.setLayoutX(20);
-        LoadButton.setLayoutY(CELL_SIZE * GRID_SIZE_Y + 10);
+        LoadButton.setLayoutX(this.GRID_SIZE_X * CELL_SIZE + 20);
+        LoadButton.setLayoutY(440);
         LoadButton.setFocusTraversable(false);
         LoadButton.setOnAction(e -> loadRoom());
         
@@ -185,8 +196,8 @@ public class RobotSimulation extends Application {
         // Create an anchor pane for input box and label
         AnchorPane ap = new AnchorPane();
         ap.setFocusTraversable(false);
-        AnchorPane.setLeftAnchor(angleLabel, GRID_SIZE_X * CELL_SIZE + 20.0); // Adjust as needed
-        AnchorPane.setTopAnchor(angleLabel, 450.0);
+        AnchorPane.setLeftAnchor(angleLabel, this.GRID_SIZE_X * CELL_SIZE + 20.0); // Adjust as needed
+        AnchorPane.setTopAnchor(angleLabel, 560.0);
 
         // Create a text field for input
         TextField angleInput = new TextField();
@@ -206,8 +217,8 @@ public class RobotSimulation extends Application {
             }
         });
 
-        AnchorPane.setLeftAnchor(angleInput, GRID_SIZE_X * CELL_SIZE + 120.0); // Adjust as needed
-        AnchorPane.setTopAnchor(angleInput, 450.0);
+        AnchorPane.setLeftAnchor(angleInput, this.GRID_SIZE_X * CELL_SIZE + 120.0); // Adjust as needed
+        AnchorPane.setTopAnchor(angleInput, 560.0);
 
         // Add label and input box to AnchorPane
         ap.getChildren().addAll(angleLabel, angleInput);
@@ -220,8 +231,8 @@ public class RobotSimulation extends Application {
             double mouseY = event.getY();
             int col = (int) (mouseX / CELL_SIZE);
             int row = (int) (mouseY / CELL_SIZE);
-            if(col < 0 || col >= GRID_SIZE_X || row < 0 || row >= GRID_SIZE_Y) {
-            	System.err.println("Trying to place an object outside of grid.");
+            if(col < 0 || col >= this.GRID_SIZE_X || row < 0 || row >= this.GRID_SIZE_Y) {
+            	//System.err.println("Trying to place an object outside of grid." + col + " " + row);
             }else{
 	            if (this.isDrawingProgrammed) {
 	            	// Create a programmed robot with view dist 2
@@ -348,8 +359,8 @@ public class RobotSimulation extends Application {
 
     // Button controll functions
     private void loadRoom() {
-        for (int y = 0; y < GRID_SIZE_Y; y++) {
-            for (int x = 0; x < GRID_SIZE_X; x++) {
+        for (int y = 0; y < this.GRID_SIZE_Y; y++) {
+            for (int x = 0; x < this.GRID_SIZE_X; x++) {
                 Rectangle cell = new Rectangle(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
                 cell.setFill(Color.WHITE);
                 cell.setStroke(Color.BLACK);
@@ -359,10 +370,14 @@ public class RobotSimulation extends Application {
 
         ArrayList<Obstacle> obstacleList = this.room.getObstacles();
         for (int j = 0; j < obstacleList.size(); j++) {
-            Rectangle cell = new Rectangle((obstacleList.get(j)).getPosition().getCol() * CELL_SIZE, (obstacleList.get(j)).getPosition().getRow() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-            cell.setFill(Color.BLACK);
-            cell.setStroke(Color.BLACK);
-            root.getChildren().add(cell);
+            if(obstacleList.get(j).getPosition().getCol() > this.GRID_SIZE_X || obstacleList.get(j).getPosition().getRow() > this.GRID_SIZE_Y){
+
+            }else{
+                Rectangle cell = new Rectangle((obstacleList.get(j)).getPosition().getCol() * CELL_SIZE, (obstacleList.get(j)).getPosition().getRow() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                cell.setFill(Color.BLACK);
+                cell.setStroke(Color.BLACK);
+                root.getChildren().add(cell);
+            }
         }
         this.room.obstacles.clear();
 
@@ -427,9 +442,12 @@ public class RobotSimulation extends Application {
                         int col = Integer.parseInt(x);
                         int row = Integer.parseInt(y);
 
-                        this.room.createObstacleAt(row, col, timeClicks);
-                        this.room.obstacles.get(this.room.obstacles.size()-1).createRectangle(CELL_SIZE);
-                        root.getChildren().add(this.room.obstacles.get(this.room.obstacles.size()-1).rectangle);
+                        if(row > this.GRID_SIZE_Y || col > this.GRID_SIZE_X){}
+                        else{
+                            this.room.createObstacleAt(row, col, timeClicks);
+                            this.room.obstacles.get(this.room.obstacles.size()-1).createRectangle(CELL_SIZE);
+                            root.getChildren().add(this.room.obstacles.get(this.room.obstacles.size()-1).rectangle);
+                        }
                         i ++;
                     }
                 }
@@ -456,18 +474,17 @@ public class RobotSimulation extends Application {
                         int row = Integer.parseInt(y);
                         int ang = Integer.parseInt(angle);
 
-                        //Circle circle = new Circle(col * CELL_SIZE + CELL_SIZE / 2, row * CELL_SIZE + CELL_SIZE / 2, CELL_SIZE / 2, Color.RED);
-                        //root.getChildren().add(circle);
+                        if(row > this.GRID_SIZE_Y || col > this.GRID_SIZE_X){}
+                        else{
 
-                        ControlledRobot rbt = new ControlledRobot(new Position(col, row), ang, CELL_SIZE, this.room);
-                        //this.room.robots.add(rbt);
-                        this.room.addRobot(rbt);
-                        this.ctrlRobot_CNT++;
+                            ControlledRobot rbt = new ControlledRobot(new Position(col, row), ang, CELL_SIZE, this.room);
+                            this.room.addRobot(rbt);
+                            this.ctrlRobot_CNT++;
 
-                        rbt.createImageView();
+                            rbt.createImageView();
 
-                        root.getChildren().addAll(rbt.getImageView());
-
+                            root.getChildren().addAll(rbt.getImageView());
+                        }
                         i+=2;
                     }
                 }
@@ -495,17 +512,18 @@ public class RobotSimulation extends Application {
                         int ang = Integer.parseInt(angle);
                         int dist = Integer.parseInt(distance);
 
-                        //Circle circle = new Circle(col * CELL_SIZE + CELL_SIZE / 2, row * CELL_SIZE + CELL_SIZE / 2, CELL_SIZE / 2, Color.BLUE);
-                        //root.getChildren().add(circle);
+                        if(row > this.GRID_SIZE_Y || col > this.GRID_SIZE_X){}
+                        else{
 
-                        ProgrammedRobot rbtPRG = new ProgrammedRobot(new Position(col, row), ang, CELL_SIZE, this.room, dist);
-                        //this.room.robots.add(rbtPRG);
-                        this.room.addRobot(rbtPRG);
-                        
-                        rbtPRG.createImageView();
+                            ProgrammedRobot rbtPRG = new ProgrammedRobot(new Position(col, row), ang, CELL_SIZE, this.room, dist);
 
-                        // Add the circles to the root after creating the grid
-                        root.getChildren().addAll(rbtPRG.getImageView());
+                            this.room.addRobot(rbtPRG);
+                            
+                            rbtPRG.createImageView();
+
+                            root.getChildren().addAll(rbtPRG.getImageView());
+                            
+                        }
 
                         i += 3;
                     }
@@ -557,8 +575,8 @@ public class RobotSimulation extends Application {
     // Grid setup
     private void createGrid(Group root) {
         Pane grid = new Pane(); 
-        for (int y = 0; y < GRID_SIZE_Y; y++) {
-            for (int x = 0; x < GRID_SIZE_X; x++) {
+        for (int y = 0; y < this.GRID_SIZE_Y; y++) {
+            for (int x = 0; x < this.GRID_SIZE_X; x++) {
                 Rectangle cell = new Rectangle(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
                 cell.setFill(Color.WHITE);
                 cell.setStroke(Color.BLACK);
