@@ -47,6 +47,7 @@ public class RobotSimulation extends Application {
     // Start application paused
     private boolean isPaused = true;
     private Timeline timeline;
+	// Start with no buttons pressed
     private boolean isRemoving = false;
     private boolean isDrawingProgrammed = false;
     private boolean isDrawingObstacle = false;
@@ -60,24 +61,25 @@ public class RobotSimulation extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+	    // Parse args as grid size
         List<String> raw = getParameters().getRaw();
         if(raw.size() > 0){
             try {
-                this.GRID_SIZE_X = Integer.parseInt(raw.get(0));
+                this.GRID_SIZE_X = Integer.parseInt(raw.get(raw.size()-2));
             }
             catch (NumberFormatException e)
             {
-                System.err.println("Invalid input for GRID_SIZE_X: " + raw.get(0));
+                System.err.println("Invalid input for GRID_SIZE_X: " + raw.get(raw.size()-2));
                 this.GRID_SIZE_X = 10;
             }
         }
         if(raw.size() > 1){
             try {
-                this.GRID_SIZE_Y = Integer.parseInt(raw.get(1));
+                this.GRID_SIZE_Y = Integer.parseInt(raw.get(raw.size()-1));
             }
             catch (NumberFormatException e)
             {
-                System.err.println("Invalid input for GRID_SIZE_Y: " + raw.get(1));
+                System.err.println("Invalid input for GRID_SIZE_Y: " + raw.get(raw.size()-1));
                 this.GRID_SIZE_Y = 10;
             }
         }
@@ -375,7 +377,7 @@ public class RobotSimulation extends Application {
 		return null;
 	}
 
-    // Button controll functions
+    
     private void loadRoom() {
         for (int y = 0; y < this.GRID_SIZE_Y; y++) {
             for (int x = 0; x < this.GRID_SIZE_X; x++) {
@@ -609,8 +611,6 @@ public class RobotSimulation extends Application {
         launch(args);
     }
 
-    // ControlledRobot seems to be animated correctly, Programmed jumps weirdly
-    // TODO when unpaused, skips a few frames
     public void redraw() {
         for (Robot rbt : this.room.robots) {
             Position newPosition = rbt.getPosition();
