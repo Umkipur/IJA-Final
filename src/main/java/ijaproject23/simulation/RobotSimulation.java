@@ -61,7 +61,7 @@ public class RobotSimulation extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-	    // Parse args as grid size
+	// Parse args as grid size
         List<String> raw = getParameters().getRaw();
         if(raw.size() > 0){
             try {
@@ -70,7 +70,7 @@ public class RobotSimulation extends Application {
             catch (NumberFormatException e)
             {
                 System.err.println("Invalid input for GRID_SIZE_X: " + raw.get(raw.size()-2));
-                this.GRID_SIZE_X = 10;
+                this.GRID_SIZE_X = 8;
             }
         }
         if(raw.size() > 1){
@@ -80,7 +80,7 @@ public class RobotSimulation extends Application {
             catch (NumberFormatException e)
             {
                 System.err.println("Invalid input for GRID_SIZE_Y: " + raw.get(raw.size()-1));
-                this.GRID_SIZE_Y = 10;
+                this.GRID_SIZE_Y = 8;
             }
         }
 
