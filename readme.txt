@@ -10,3 +10,4 @@ Mazani objektu funguje, ale obcas se neodstrani vizualizace (zkousel jsem ho zpr
 Pri simulaci pohybu dvou a vic objektu obcas probliknou - radsi prezentovat roboty samostatne
 Argumenty pro zmenu velikosti mrizky nefunguji 
 Neni to v mavenu ani antu
+Komentare
