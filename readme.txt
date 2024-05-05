@@ -8,4 +8,5 @@ Chyby:
 Musel jsem predelat zpetny prehrani, ale moc to nefunguje - radsi neprezentovat
 Mazani objektu funguje, ale obcas se neodstrani vizualizace (zkousel jsem ho zpruhlednit i vynutit refresh okna)
 Pri simulaci pohybu dvou a vic objektu obcas probliknou - radsi prezentovat roboty samostatne
+Argumenty pro zmenu velikosti mrizky nefunguji 
 Neni to v mavenu ani antu
