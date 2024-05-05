@@ -61,8 +61,26 @@ public class RobotSimulation extends Application {
     @Override
     public void start(Stage primaryStage) {
         List<String> raw = getParameters().getRaw();
-        this.GRID_SIZE_X = Integer.parseInt(raw.get(0));
-        this.GRID_SIZE_Y = Integer.parseInt(raw.get(1));
+        if(raw.size() > 0){
+            try {
+                this.GRID_SIZE_X = Integer.parseInt(raw.get(0));
+            }
+            catch (NumberFormatException e)
+            {
+                System.err.println("Invalid input for GRID_SIZE_X: " + raw.get(0));
+                this.GRID_SIZE_X = 10;
+            }
+        }
+        if(raw.size() > 1){
+            try {
+                this.GRID_SIZE_Y = Integer.parseInt(raw.get(1));
+            }
+            catch (NumberFormatException e)
+            {
+                System.err.println("Invalid input for GRID_SIZE_Y: " + raw.get(1));
+                this.GRID_SIZE_Y = 10;
+            }
+        }
 
         logger.info(raw.toString());
 
